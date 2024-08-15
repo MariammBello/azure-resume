@@ -30,7 +30,7 @@ jobs:
         uses: azure/CLI@v1
         with:
           inlineScript: |
-            az storage blob upload-batch --account-name <azureresumemariamacg> --auth-mode key -d '$web' -s frontend/
+            az storage blob upload-batch --account-name azureresumemariamacg --auth-mode key -d '$web' -s frontend/
 
       # Commenting CDN step out as creating a CDN profile is a paid feature and was not used for this project
       # - name: Purge CDN Endpoint
