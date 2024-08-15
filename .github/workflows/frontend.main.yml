@@ -14,7 +14,13 @@ jobs:
     - uses: actions/checkout@v3
     - uses: azure/login@v1
       with:
-          creds: ${{ secrets.Azure_Credentials }}
+          creds: |
+            {
+              "clientId": "${{ secrets.AZURE_SP_ID }}",
+              "clientSecret": "${{ secrets.AZURE_SP_PASSWORD }}",
+              "subscriptionId": "${{ secrets.AZURE_SUBSCRIPTION_ID }}",
+              "tenantId": "${{ secrets.AZURE_TENANT_ID }}"
+            }
 
     - name: Upload to blob storage
       uses: azure/CLI@v1
@@ -33,3 +39,4 @@ jobs:
       run: |
             az logout
       if: always()
+
