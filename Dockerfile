@@ -13,9 +13,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Expose the port the Flask app runs on
 EXPOSE 5000
 
-# Define environment variables (default values can be overridden)
-ENV MONGO_CONNECTION_STRING="mongodb://mongoadmin:secret@mongodb-container:27017/"
-ENV MONGO_DATABASE_NAME="resume_challenge"
-
 # Run app.py when the container launches
 CMD ["python", "main.py"]
