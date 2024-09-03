@@ -2,10 +2,8 @@
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /app
 
-# Copy the project files
+# Copy the project files and restore any dependencies
 COPY ./backend/api/*.csproj ./api/
-
-# Restore the dependencies
 WORKDIR /app/api
 RUN dotnet restore
 
