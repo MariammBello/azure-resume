@@ -2,13 +2,17 @@
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /app
 
-# Copy the project files and restore any dependencies
+# Copy the project files
 COPY ./backend/api/*.csproj ./api/
-RUN dotnet restore ./api/*.csproj
 
-# Copy the entire project and build the application
-COPY ./backend/api/. ./api/
+# Restore the dependencies
 WORKDIR /app/api
+RUN dotnet restore
+
+# Copy the rest of the application files
+COPY ./backend/api/. ./
+
+# Build the application
 RUN dotnet publish -c Release -o /out
 
 # Use the official .NET 6 runtime image to run the application
