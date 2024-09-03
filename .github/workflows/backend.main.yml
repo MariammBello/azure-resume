@@ -34,9 +34,9 @@ jobs:
       run: |
         docker push ghcr.io/${{ env.CONTAINER_IMAGE_NAME }}:latest
 
-    - name: 'Deploy with environment variables'
-      run: |
-        docker run -d -p 80:80 \
-          -e MONGODB_CONNECTION_STRING=${{ secrets.MONGODB_CONNECTION_STRING }} \
-          -e MONGODB_DATABASE_NAME=${{ secrets.MONGODB_DATABASE_NAME }} \
-          ghcr.io/${{ env.CONTAINER_IMAGE_NAME }}:latest
+    # - name: 'Deploy with environment variables'
+    #   run: |
+    #     docker run -d -p 80:80 \
+    #       -e MONGODB_CONNECTION_STRING=${{ secrets.MONGODB_CONNECTION_STRING }} \
+    #       -e MONGODB_DATABASE_NAME=${{ secrets.MONGODB_DATABASE_NAME }} \
+    #       ghcr.io/${{ env.CONTAINER_IMAGE_NAME }}:latest

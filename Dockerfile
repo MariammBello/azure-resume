@@ -1,29 +1,21 @@
-# Use the official .NET 6 SDK image to build the application
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+# Use an official Python runtime as a parent image
+FROM python:3.9-slim
+
+# Set the working directory in the container
 WORKDIR /app
 
-# Copy the project files and restore any dependencies
-COPY ./backend/api/*.csproj ./api/
-WORKDIR /app/api
-RUN dotnet restore
+# Copy the current directory contents into the container at /app
+COPY backend/ /app
 
-# Copy the rest of the application files
-COPY ./backend/api/. ./
+# Install any needed packages specified in requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Build the application
-RUN dotnet publish -c Release -o /out
+# Expose the port the Flask app runs on
+EXPOSE 5000
 
-# Use the official .NET 6 runtime image to run the application
-FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS runtime
-WORKDIR /app
-COPY --from=build /out ./
+# Define environment variables (default values can be overridden)
+ENV MONGO_CONNECTION_STRING="mongodb://mongoadmin:secret@mongodb-container:27017/"
+ENV MONGO_DATABASE_NAME="resume_challenge"
 
-# Expose the port your application runs on (e.g., 80)
-EXPOSE 80
-
-# Set environment variables (optional defaults)
-ENV MONGODB_CONNECTION_STRING=""
-ENV MONGODB_DATABASE_NAME=""
-
-# Set the entry point to run your application
-ENTRYPOINT ["dotnet", "Company.Function.dll"]
+# Run app.py when the container launches
+CMD ["python", "main.py"]
