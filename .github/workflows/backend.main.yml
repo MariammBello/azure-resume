@@ -2,55 +2,42 @@ name: Deploy_backend
 
 on:
   push:
-      branches: [main]
-      paths:
+    branches: [main]
+    paths:
       - 'backend/**'
 
 env:
-  AZURE_FUNCTIONAPP_NAME: 'GetResumeCounterMariam'   # set this to your functions app name on Azure
-  AZURE_FUNCTIONAPP_PACKAGE_PATH: 'backend'       # set this to the path to your function app project, defaults to the repository root
-  DOTNET_VERSION: '6.0.x'                   # set this to the dotnet version to use (e.g. '2.1.x', '3.1.x', '5.0.x')
+  CONTAINER_IMAGE_NAME: ${{ github.repository }}
+  DOTNET_VERSION: '6.0.x'
 
 jobs:
   build-and-deploy:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     environment: dev
     steps:
     - name: 'Checkout GitHub Action'
       uses: actions/checkout@v3
 
-    - name: 'Login via Azure CLI'
-      uses: azure/login@v1
-      with:
-        creds: |
-          {
-            "clientId": "${{ secrets.AZURE_SP_ID }}",
-            "clientSecret": "${{ secrets.AZURE_SP_PASSWORD }}",
-            "subscriptionId": "${{ secrets.AZURE_SUBSCRIPTION_ID }}",
-            "tenantId": "${{ secrets.AZURE_TENANT_ID }}"
-          }
+    - name: 'Set up Docker Buildx'
+      uses: docker/setup-buildx-action@v2
 
-    - name: Setup DotNet ${{ env.DOTNET_VERSION }} Environment
-      uses: actions/setup-dotnet@v3
+    - name: 'Login to GitHub Container Registry'
+      uses: docker/login-action@v2
       with:
-        dotnet-version: ${{ env.DOTNET_VERSION }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: 'Resolve Project Dependencies Using Dotnet'
-      shell: pwsh
+    - name: 'Build Docker image'
       run: |
-        pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/api'
-        dotnet build --configuration Release --output ./output
-        popd
-    - name: 'Run unit test'
-      shell: pwsh
-      run: |
-        pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/tests'
-        dotnet test
+        docker build -t ghcr.io/${{ env.CONTAINER_IMAGE_NAME }}:latest -f ./backend/Dockerfile .
 
-    - name: 'Run Azure Functions Action'
-      uses: Azure/functions-action@v1
-      id: fa
-      with:
-        app-name: ${{ env.AZURE_FUNCTIONAPP_NAME }}
-        package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/api/output'
-      
+    - name: 'Push Docker image'
+      run: |
+        docker push ghcr.io/${{ env.CONTAINER_IMAGE_NAME }}:latest
+
+    # - name: 'Deploy with environment variables'
+    #   run: |
+    #     docker run -d -p 80:80 \
+    #       -e MONGODB_CONNECTION_STRING=${{ secrets.MONGODB_CONNECTION_STRING }} \
+    #       -e MONGODB_DATABASE_NAME=${{ secrets.MONGODB_DATABASE_NAME }} \
+    #       ghcr.io/${{ env.CONTAINER_IMAGE_NAME }}:latest
