@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using MongoDB.Driver;
 using MongoDB.Bson;
 using System.Text;
+using System.Net.Http;
 
 namespace Company.Function
 {
