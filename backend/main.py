@@ -18,7 +18,7 @@ collection = db["views"]
 def home():
     return jsonify({"message": "This is a dummy response"})
 
-@app.route('/views', methods=['GET'])
+@app.route('/GetResumeCounter', methods=['GET'])
 def get_and_increment_views():
     # Retrieve the current view count
     view_item = collection.find_one({"id": "0"})
@@ -33,9 +33,8 @@ def get_and_increment_views():
     views += 1
     collection.update_one({"id": "0"}, {"$set": {"views": views}})
     
-    print(views)
-    
-    return jsonify({"views": views})
+    return jsonify({"count": views})
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)

@@ -2,8 +2,8 @@
 window.addEventListener('DOMContentLoaded', (event) =>{
     getVisitCount();
 })
-const backendApiUrl = 'https://sheac-api.hostspacecloud.com/views'
-const localFunctionApi = 'http://localhost:5000/views';
+const backendApiUrl = 'https://sheac-api.hostspacecloud.com/GetResumeCounter'
+const localFunctionApi = 'http://localhost:5000/GetResumeCounter';
 
 const getVisitCount = () => {
     let count = 30;
