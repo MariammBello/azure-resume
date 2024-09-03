@@ -28,7 +28,7 @@ jobs:
 
     - name: 'Build Docker image'
       run: |
-        docker build -t ghcr.io/${{ env.CONTAINER_IMAGE_NAME }}:latest -f ./backend/Dockerfile .
+        docker build -t ghcr.io/${{ env.CONTAINER_IMAGE_NAME }}:latest -f Dockerfile .
 
     - name: 'Push Docker image'
       run: |
