@@ -9,7 +9,7 @@ on:
       - '.github/workflows/backend.main.yml'
 
 env:
-  CONTAINER_IMAGE_NAME: ${{ github.repository }}
+  CONTAINER_IMAGE_NAME: timtech4u/resume
   DOTNET_VERSION: '6.0.x'
 
 jobs:
